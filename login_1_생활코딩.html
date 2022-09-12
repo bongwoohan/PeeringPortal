@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <title>WEB1 - Welcome</title>
+  <meta charset="utf-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="colors.js"></script>
+  <script>
+    function checkLoginStatus(){
+      var loginBtn = document.querySelector('#loginBtn');
+      var nameTxt = document.querySelector('#name');
+      if(gauth.isSignedIn.get()){
+        console.log('logined');
+        loginBtn.value = 'Logout';
+        var profile = gauth.currentUser.get().getBasicProfile();
+        nameTxt.innerHTML = 'Welcome <strong>'+profile.getName()+'</strong> ';
+      } else {
+        console.log('logouted');
+        loginBtn.value = 'Login';
+        nameTxt.innerHTML = '';
+      }
+    }
+    function init(){
+      console.log('init');
+      gapi.load('auth2', function() {
+        console.log('auth2');
+        window.gauth = gapi.auth2.init({
+          client_id:'705486827987-ug6su26qm1um89adeod2mqqg3f1e4mm4.apps.googleusercontent.com'
+        })
+        gauth.then(function(){
+          console.log('googleAuth success');
+          checkLoginStatus();
+        }, function(){
+          console.log('googleAuth fail');
+        });
+      });
+    }
+  </script>
+</head>
+<body>
+  <span id="name"></span><input type="button" id="loginBtn" value="checking..." onclick="
+    if(this.value === 'Login'){
+      gauth.signIn({
+        scope:'https://www.googleapis.com/auth/calendar'
+      }).then(function(){
+        console.log('gauth.signIn()');
+        checkLoginStatus();
+      });
+    } else {
+      gauth.signOut().then(function(){
+        console.log('gauth.signOut()');
+        checkLoginStatus();
+      });
+    }
+  ">
+  <h1><a href="index.html">WEB</a></h1>
+  <input id="night_day" type="button" value="night" onclick="
+    nightDayHandler(this);
+  ">
+  <ol>
+    <li><a href="1.html">HTML</a></li>
+    <li><a href="2.html">CSS</a></li>
+    <li><a href="3.html">JavaScript</a></li>
+  </ol>
+  <h2>WEB</h2>
+  <p>The World Wide Web (abbreviated WWW or the Web) is an information space where documents and other web resources are identified by Uniform Resource Locators (URLs), interlinked by hypertext links, and can be accessed via the Internet.[1] English scientist Tim Berners-Lee invented the World Wide Web in 1989. He wrote the first web browser computer program in 1990 while employed at CERN in Switzerland.[2][3] The Web browser was released outside of CERN in 1991, first to other research institutions starting in January 1991 and to the general public on the Internet in August 1991.
+  </p>
+  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+</body>
+</html>
